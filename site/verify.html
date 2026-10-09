@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Certificate Verification — TalentCore Global</title>
+<meta name="description" content="Verify certificates issued by TalentCore Global and its affiliated institutes, including Future Talent Academy Jamshoro.">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0B2545;--blue:#1E6FD9;--gold:#F4A300;--ink:#1c2533;--muted:#5b6575;--soft:#f3f7fb;--line:#e3e9f0;--ok:#1E8E3E;--bad:#C0392B}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Poppins,Arial,sans-serif;color:var(--ink);background:var(--soft);min-height:100vh;display:flex;flex-direction:column}
+header{background:linear-gradient(135deg,#0B2545,#13315C);color:#fff;padding:18px 16px}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;line-height:1.1}
+.brand .mk{width:42px;height:42px;border-radius:12px;background:var(--gold);color:var(--navy);display:grid;place-items:center;font-weight:900}
+.brand small{display:block;color:var(--gold);font-size:.7rem;letter-spacing:.12em}
+header a.home{color:#fff;font-size:.88rem;opacity:.9}
+.wrap{max-width:760px;margin:0 auto;width:100%}
+main{flex:1;padding:36px 16px 60px}
+h1{color:var(--navy);font-size:clamp(1.5rem,4vw,2.1rem);text-align:center}
+.lead{text-align:center;color:var(--muted);margin:6px 0 24px}
+.search{display:flex;gap:10px;background:#fff;padding:10px;border-radius:16px;box-shadow:0 10px 30px rgba(11,37,69,.08)}
+.search input{flex:1;border:0;font:inherit;font-size:1rem;padding:10px 12px;text-transform:uppercase;min-width:0;color:var(--ink)}
+.search input:focus{outline:none}
+.search button{border:0;background:var(--gold);color:#1b1300;font:inherit;font-weight:700;border-radius:12px;padding:10px 20px;cursor:pointer}
+.result{margin-top:26px;border-radius:20px;overflow:hidden;background:#fff;box-shadow:0 10px 30px rgba(11,37,69,.08);display:none}
+.result .bar{padding:18px 22px;color:#fff;font-weight:800;font-size:1.15rem;display:flex;align-items:center;gap:10px}
+.ok .bar{background:var(--ok)}.bad .bar{background:var(--bad)}
+.result .body{padding:22px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.f small{display:block;color:var(--muted);font-size:.78rem}
+.f b{color:var(--navy);font-size:1.02rem}
+.medal{font-size:2.2rem}
+.aff{margin-top:18px;background:var(--soft);border-radius:12px;padding:12px 14px;font-size:.88rem;color:#333}
+.bad .body p{color:#333}
+footer{text-align:center;color:var(--muted);font-size:.82rem;padding:18px}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="brand"><span class="mk">TC</span><span>TalentCore Global<small>CERTIFICATE VERIFICATION</small></span></div>
+  <a class="home" href="index.html">← Home</a>
+</div></header>
+<main><div class="wrap">
+  <h1>🔒 Verify a Certificate</h1>
+  <p class="lead">Scan the QR code on the certificate, or type the Certificate Number below.</p>
+  <form class="search" id="f"><input id="q" placeholder="e.g. TCG-FTA-ENG-2610-01" autocomplete="off" aria-label="Certificate number"><button>Verify</button></form>
+  <div class="result" id="res"></div>
+</div></main>
+<footer>TalentCore Global · Certificates of TalentCore Global and its affiliated institutes</footer>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const medal={1:"🥇",2:"🥈",3:"🥉"},word={1:"First",2:"Second",3:"Third"};
+let DB=null;
+async function load(){if(DB)return DB;try{const r=await fetch("data/certificates.json?v="+Date.now());DB=r.ok?await r.json():[]}catch(e){DB=[]}return DB}
+async function check(id){
+  id=id.trim().toUpperCase();if(!id)return;$("q").value=id;
+  const db=await load();const c=db.find(x=>String(x.id).toUpperCase()===id);const r=$("res");r.style.display="block";
+  if(c){r.className="result ok";r.innerHTML=`<div class="bar">✅ Genuine certificate</div><div class="body">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px"><span class="medal">${medal[c.position]||"🏅"}</span><div><b style="font-size:1.25rem;color:var(--navy)">${esc(c.name)}</b><div style="color:var(--muted)">${c.father?"S/O / D/O "+esc(c.father):""}</div></div></div>
+    <div class="grid">
+      <div class="f"><small>Certificate No.</small><b>${esc(c.id)}</b></div>
+      <div class="f"><small>Award</small><b>${word[c.position]||esc(c.position)} Position</b></div>
+      <div class="f"><small>Class</small><b>${esc(c.class)}</b></div>
+      <div class="f"><small>Month</small><b>${esc(c.month)}</b></div>
+      <div class="f"><small>Percentage</small><b>${esc(c.percentage)}</b></div>
+      <div class="f"><small>Issued on</small><b>${esc(c.issued||"")}</b></div>
+    </div>
+    <div class="aff">🏫 Issued by <b>${esc(c.institute||"Future Talent Academy Jamshoro")}</b>, affiliated with <b>TalentCore Global</b>.</div></div>`;}
+  else{r.className="result bad";r.innerHTML=`<div class="bar">❌ Certificate not found</div><div class="body"><p>No certificate with number <b>${esc(id)}</b> is in our records. Please check the number. If you still think it is genuine, contact us on WhatsApp <b>0306-3511003</b>.</p></div>`;}
+  history.replaceState(null,"","?id="+encodeURIComponent(id));
+}
+$("f").onsubmit=e=>{e.preventDefault();check($("q").value)};
+const p=new URLSearchParams(location.search).get("id");if(p)check(p);
+</script>
+</body>
+</html>

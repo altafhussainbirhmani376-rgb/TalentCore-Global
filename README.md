@@ -14,3 +14,12 @@ The top 5 students of each district (15 laptops in total) receive a laptop at th
 Website: https://altafhussainbirhmani376-rgb.github.io/TalentCore-Global/
 
 A private scholarship program by TalentCore Global. Not a Government of Sindh scheme.
+
+## Certificates (Future Talent Academy — affiliated with TalentCore Global)
+
+- Verification page: `site/verify.html` (records in `site/data/certificates.json`)
+- Make certificates for a month's top 3 from the marksheet:
+  `python3 tools/make_certificates.py English_Computer_Monthly_Marksheet_2026-27.xlsx "Eng Oct 2026"`
+  This adds the winners to `site/data/certificates.json` and writes a Word file with one certificate per winner,
+  each with its own Certificate No. and QR code. Then publish `site/` to `gh-pages`.
+- Blank template with QR: `documents/Award_Certificates_Template_with_QR.docx`
